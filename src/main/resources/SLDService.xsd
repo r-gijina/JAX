@@ -1,0 +1,492 @@
+<xs:schema xmlns="https://nexus.bisih.org/sld.002.002.02"
+	attributeFormDefault="unqualified" elementFormDefault="qualified"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="https://nexus.bisih.org/sld.002.002.02">
+
+	<xs:element name="Document" type="Document" />
+	<xs:complexType name="ServiceLevelDescription">
+		<xs:sequence>
+			<xs:element name="Ctry" type="CountryCode" maxOccurs="1"
+				minOccurs="1">
+			</xs:element>
+			<xs:element name="IPS" type="IPS" maxOccurs="unbounded"
+				minOccurs="1">
+			</xs:element>
+
+			<xs:element type="LocalBankIdentifierDescription"
+				name="LclBkId" maxOccurs="1" minOccurs="0" />
+			<xs:element type="Max70Text" name="LclBkIdFmt"
+				maxOccurs="1" minOccurs="0" />
+			<xs:element name="LclAcctNb"
+				type="LocalAccountNumberDetails" maxOccurs="1" minOccurs="1">
+			</xs:element>
+
+			<xs:element name="MaxAmt"
+				type="ActiveOrHistoricCurrencyAndAmount" maxOccurs="1" minOccurs="1">
+			</xs:element>
+			<xs:element type="Max3Number" name="TmOut" maxOccurs="1"
+				minOccurs="1" />
+			<xs:element type="ISODateTime" name="FctvDtTm"
+				maxOccurs="1" minOccurs="1" />
+			<xs:element name="AlsSchmes" type="AliasScheme"
+				maxOccurs="unbounded" minOccurs="0">
+			</xs:element>
+			<xs:element name="RchblBks" type="ReachableBanks"
+				maxOccurs="1" minOccurs="1">
+			</xs:element>
+
+			<xs:element name="ScrngMdtryFlds"
+				type="ScreeningMandatoryFields" maxOccurs="1" minOccurs="0"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Document">
+		<xs:sequence>
+			<xs:element name="SLD" type="ServiceLevelDescription"
+				maxOccurs="1" minOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="IBANAccepted">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute type="TrueFalseIndicator" name="accepted"
+					use="required" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="LocalAccountNumberDetails">
+		<xs:sequence>
+			<xs:element type="Max70Text" name="LclAcctFmt"
+				maxOccurs="1" minOccurs="0" />
+			<xs:element name="LclAcctVldtn"
+				type="LocalAccountValidation" maxOccurs="1" minOccurs="0">
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute type="TrueFalseIndicator" use="required"
+			name="accepted" />
+	</xs:complexType>
+	<xs:simpleType name="Max35Text">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1" />
+			<xs:maxLength value="35" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="CountryCode">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[A-Z]{2,2}" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TrueFalseIndicator">
+		<xs:restriction base="xs:boolean" />
+	</xs:simpleType>
+	<xs:simpleType name="Max70Text">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1" />
+			<xs:maxLength value="70" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType
+		name="ActiveOrHistoricCurrencyAndAmount_SimpleType">
+		<xs:restriction base="xs:decimal">
+			<xs:fractionDigits value="5" />
+			<xs:totalDigits value="18" />
+			<xs:minInclusive value="0" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="ActiveOrHistoricCurrencyAndAmount">
+		<xs:annotation>
+			<xs:documentation source="Name" xml:lang="EN">ActiveOrHistoricCurrencyAndAmount
+			</xs:documentation>
+			<xs:documentation source="Definition" xml:lang="EN">A
+				number of monetary units specified in an active or a historic
+				currency where the unit of currency is explicit and compliant with
+				ISO 4217.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension
+				base="ActiveOrHistoricCurrencyAndAmount_SimpleType">
+				<xs:attribute name="Ccy"
+					type="ActiveOrHistoricCurrencyCode" use="required">
+					<xs:annotation>
+						<xs:documentation source="Name" xml:lang="EN">Currency
+						</xs:documentation>
+						<xs:documentation source="Definition"
+							xml:lang="EN">Medium of exchange of currency.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:simpleType name="ActiveOrHistoricCurrencyCode">
+		<xs:annotation>
+			<xs:documentation source="Name" xml:lang="EN">ActiveOrHistoricCurrencyCode
+			</xs:documentation>
+			<xs:documentation source="Definition" xml:lang="EN">A
+				code allocated to a currency by a Maintenance Agency under an
+				international identification scheme, as described in the latest
+				edition of the international standard ISO 4217 "Codes for the
+				representation of currencies and funds".
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[A-Z]{3,3}" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max240Text">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1" />
+			<xs:maxLength value="240" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Number">
+		<xs:restriction base="xs:decimal">
+			<xs:fractionDigits value="0" />
+			<xs:totalDigits value="18" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ISODateTime">
+		<xs:restriction base="xs:dateTime" />
+	</xs:simpleType>
+	<xs:complexType
+		name="FinancialInstitutionIdentification18">
+		<xs:sequence>
+			<xs:element maxOccurs="1" minOccurs="0" name="BICFI"
+				type="BICFIDec2014Identifier" />
+			<xs:element maxOccurs="1" minOccurs="0" name="ClrSysMmbId"
+				type="ClearingSystemMemberIdentification2" />
+			<xs:element maxOccurs="1" minOccurs="0" name="LEI"
+				type="LEIIdentifier" />
+			<xs:element maxOccurs="1" minOccurs="0" name="Nm"
+				type="Max140Text" />
+			<xs:element maxOccurs="1" minOccurs="0" name="PstlAdr"
+				type="PostalAddress24" />
+			<xs:element maxOccurs="1" minOccurs="0" name="Othr"
+				type="GenericFinancialIdentification1" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="BICFIDec2014Identifier">
+		<xs:restriction base="xs:string">
+			<xs:pattern
+				value="[A-Z0-9]{4,4}[A-Z]{2,2}[A-Z0-9]{2,2}([A-Z0-9]{3,3}){0,1}" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType
+		name="ClearingSystemMemberIdentification2">
+		<xs:sequence>
+			<xs:element maxOccurs="1" minOccurs="0" name="ClrSysId"
+				type="ClearingSystemIdentification2Choice" />
+			<xs:element name="MmbId" type="Max35Text" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="LEIIdentifier">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[A-Z0-9]{18,18}[0-9]{2,2}" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Max140Text">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1" />
+			<xs:maxLength value="140" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="PostalAddress24">
+		<xs:sequence>
+			<xs:element maxOccurs="1" minOccurs="0" name="AdrTp"
+				type="AddressType3Choice" />
+			<xs:element maxOccurs="1" minOccurs="0" name="Dept"
+				type="Max70Text" />
+			<xs:element maxOccurs="1" minOccurs="0" name="SubDept"
+				type="Max70Text" />
+			<xs:element maxOccurs="1" minOccurs="0" name="StrtNm"
+				type="Max70Text" />
+			<xs:element maxOccurs="1" minOccurs="0" name="BldgNb"
+				type="Max16Text" />
+			<xs:element maxOccurs="1" minOccurs="0" name="BldgNm"
+				type="Max35Text" />
+			<xs:element maxOccurs="1" minOccurs="0" name="Flr"
+				type="Max70Text" />
+			<xs:element maxOccurs="1" minOccurs="0" name="PstBx"
+				type="Max16Text" />
+			<xs:element maxOccurs="1" minOccurs="0" name="Room"
+				type="Max70Text" />
+			<xs:element maxOccurs="1" minOccurs="0" name="PstCd"
+				type="Max16Text" />
+			<xs:element maxOccurs="1" minOccurs="0" name="TwnNm"
+				type="Max35Text" />
+			<xs:element maxOccurs="1" minOccurs="0" name="TwnLctnNm"
+				type="Max35Text" />
+			<xs:element maxOccurs="1" minOccurs="0" name="DstrctNm"
+				type="Max35Text" />
+			<xs:element maxOccurs="1" minOccurs="0" name="CtrySubDvsn"
+				type="Max35Text" />
+			<xs:element maxOccurs="1" minOccurs="0" name="Ctry"
+				type="CountryCode" />
+			<xs:element maxOccurs="7" minOccurs="0" name="AdrLine"
+				type="Max70Text" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="GenericFinancialIdentification1">
+		<xs:sequence>
+			<xs:element name="Id" type="Max35Text" />
+			<xs:element maxOccurs="1" minOccurs="0" name="SchmeNm"
+				type="FinancialIdentificationSchemeName1Choice" />
+			<xs:element maxOccurs="1" minOccurs="0" name="Issr"
+				type="Max35Text" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType
+		name="ClearingSystemIdentification2Choice">
+		<xs:choice>
+			<xs:element name="Cd"
+				type="ExternalClearingSystemIdentification1Code" />
+			<xs:element name="Prtry" type="Max35Text" />
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="AddressType3Choice">
+		<xs:choice>
+			<xs:element name="Cd" type="AddressType2Code" />
+			<xs:element name="Prtry" type="GenericIdentification30" />
+		</xs:choice>
+	</xs:complexType>
+	<xs:simpleType name="Max16Text">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1" />
+			<xs:maxLength value="16" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType
+		name="FinancialIdentificationSchemeName1Choice">
+		<xs:choice>
+			<xs:element name="Cd"
+				type="ExternalFinancialInstitutionIdentification1Code" />
+			<xs:element name="Prtry" type="Max35Text" />
+		</xs:choice>
+	</xs:complexType>
+	<xs:simpleType
+		name="ExternalClearingSystemIdentification1Code">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1" />
+			<xs:maxLength value="5" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType
+		name="ExternalFinancialInstitutionIdentification1Code">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1" />
+			<xs:maxLength value="4" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="AddressType2Code">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="ADDR" />
+			<xs:enumeration value="PBOX" />
+			<xs:enumeration value="HOME" />
+			<xs:enumeration value="BIZZ" />
+			<xs:enumeration value="MLTO" />
+			<xs:enumeration value="DLVY" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="GenericIdentification30">
+		<xs:sequence>
+			<xs:element name="Id" type="Exact4AlphaNumericText" />
+			<xs:element name="Issr" type="Max35Text" />
+			<xs:element maxOccurs="1" minOccurs="0" name="SchmeNm"
+				type="Max35Text" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="Exact4AlphaNumericText">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[a-zA-Z0-9]{4}" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="IPS">
+		<xs:sequence>
+			<xs:element type="UUIDv4Identifier" name="IPSID"
+				maxOccurs="1" minOccurs="1" />
+
+			<xs:element name="IBAN" type="IBANAccepted" maxOccurs="1"
+				minOccurs="1">
+			</xs:element>
+			<xs:element name="AlisCnvrsn" type="AliasConversion"
+				maxOccurs="1" minOccurs="1">
+			</xs:element>
+			<xs:element name="AcctVldtn" type="AccountValidation"
+				maxOccurs="1" minOccurs="1">
+			</xs:element>
+			<xs:element name="IPSMdtryFlds" type="IPSMandatoryFields"
+				maxOccurs="1" minOccurs="0">
+			</xs:element>
+			<xs:element name="ConfOfPyee" type="ConfirmationOfPayee"
+				maxOccurs="1" minOccurs="1">
+			</xs:element>
+			<xs:element name="OnBrdngDtTm" type="ISODateTime"
+				maxOccurs="1" minOccurs="1">
+			</xs:element>
+
+			<xs:element name="RchblBkIds" type="ReachableBankIds"
+				maxOccurs="unbounded" minOccurs="1"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:simpleType name="LocalBankIdentifierDescription">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="BIC" />
+			<xs:enumeration value="SORTCODE" />
+			<xs:enumeration value="ABA" />
+			<xs:enumeration value="IFSCCODE" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="LocalAccountValidation">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="MOD7" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="AliasConversion">
+		<xs:sequence>
+
+			<xs:element name="SchmeId" type="UUIDv4Identifier" maxOccurs="unbounded" minOccurs="0"></xs:element>
+		</xs:sequence>
+		<xs:attribute type="TrueFalseIndicator" name="available"
+			use="required" />
+	</xs:complexType>
+
+	<xs:complexType name="AliasScheme">
+		<xs:sequence>
+			<xs:element name="SchmeId" type="UUIDv4Identifier"
+				maxOccurs="1" minOccurs="1"></xs:element>
+			<xs:element type="Max70Text" name="SchmeNm" maxOccurs="1"
+				minOccurs="1" />
+			<xs:element type="AliasFormats" name="AlsFrmts"
+				maxOccurs="unbounded" minOccurs="1" />
+
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="AliasFormats">
+		<xs:sequence>
+			<xs:element type="Max70Text" name="AlsNm" maxOccurs="1"
+				minOccurs="1" />
+			<xs:element type="Max70Text" name="AlsExmpl" maxOccurs="1"
+				minOccurs="1" />
+			<xs:element type="Max70Text" name="AlsFrmat" maxOccurs="1"
+				minOccurs="1" />
+			<xs:element type="Max70Text" name="AlsDscrptn"
+				maxOccurs="1" minOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AccountValidation">
+		<xs:simpleContent>
+			<xs:extension base="xs:boolean">
+				<xs:attribute type="TrueFalseIndicator"
+					name="available" use="required" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="ConfirmationOfPayee">
+		<xs:sequence>
+			<xs:element type="ConfirmationOfPayeeType"
+				name="ConfPyeeTp" maxOccurs="1" minOccurs="0" />
+		</xs:sequence>
+		<xs:attribute type="TrueFalseIndicator" name="available"
+			use="required" />
+	</xs:complexType>
+	<xs:simpleType name="ConfirmationOfPayeeType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="REALNAME" />
+			<xs:enumeration value="NICKNAME" />
+			<xs:enumeration value="COMPARISON" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="MandatoryField">
+		<xs:sequence>
+			<xs:element name="FldPth" type="Max240Text" maxOccurs="1"
+				minOccurs="1" />
+			<xs:element name="FldNm" type="Max70Text" maxOccurs="1"
+				minOccurs="0" />
+			<xs:element name="FldFmt" type="Max70Text" maxOccurs="1"
+				minOccurs="0" />
+			<xs:element name="FldVal" type="FieldValue"
+				maxOccurs="unbounded" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="IPSMandatoryFields">
+		<xs:sequence>
+			<xs:element name="IPSMdtryFld" maxOccurs="unbounded"
+				minOccurs="0" type="MandatoryField">
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ScreeningMandatoryFields">
+		<xs:sequence>
+			<xs:element name="ScrngMdtryFld" maxOccurs="unbounded"
+				minOccurs="0" type="MandatoryField">
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="FieldValue">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute type="Max35Text" name="code"
+					use="required" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:simpleType name="Max3Number">
+		<xs:restriction base="xs:decimal">
+			<xs:fractionDigits value="0" />
+			<xs:totalDigits value="3" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="ReachableBanks">
+		<xs:sequence>
+			<xs:element name="RchblBk" maxOccurs="unbounded"
+				minOccurs="1" type="ReachableBank">
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="ReachableBank">
+		<xs:sequence>
+			<xs:element name="Id" type="UUIDv4Identifier"
+				maxOccurs="1" minOccurs="1"></xs:element>
+			<xs:element type="FinancialInstitutionIdentification18"
+				name="FinInstnId" maxOccurs="1" minOccurs="1" />
+			<xs:element name="Rchbl" type="Reachable" maxOccurs="1"
+				minOccurs="1">
+			</xs:element>
+
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Reachable">
+		<xs:simpleContent>
+			<xs:extension base="xs:boolean">
+				<xs:attribute type="TrueFalseIndicator" name="value"
+					use="required" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:simpleType name="UUIDv4Identifier">
+		<xs:annotation>
+			<xs:documentation source="Name" xml:lang="EN">UUIDv4Identifier
+			</xs:documentation>
+			<xs:documentation source="Definition" xml:lang="EN">Universally
+				Unique IDentifier (UUID) version 4, as described in IETC RFC 4122
+				"Universally Unique IDentifier (UUID) URN Namespace".
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern
+				value="[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="ReachableBankIds">
+		<xs:sequence>
+			<xs:element name="ReachableBankId" type="UUIDv4Identifier"
+				maxOccurs="unbounded" minOccurs="1"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>
